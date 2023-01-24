@@ -8,7 +8,7 @@ import hello.servlet.web.frontcontroller.v4.controller.MemberFormControllerV4;
 import hello.servlet.web.frontcontroller.v4.controller.MemberListControllerV4;
 import hello.servlet.web.frontcontroller.v4.controller.MemberSaveControllerV4;
 import hello.servlet.web.frontcontroller.v5.adapter.ControllerV3HandlerAdapter;
-//import hello.servlet.web.frontcontroller.v5.adapter.ControllerV4HandlerAdapter;
+import hello.servlet.web.frontcontroller.v5.adapter.ControllerV4HandlerAdapter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -34,25 +34,27 @@ public class FrontControllerServletV5 extends HttpServlet {
         handlerMappingMap.put("/front-controller/v5/v3/members/new-form", new MemberFormControllerV3());
         handlerMappingMap.put("/front-controller/v5/v3/members/save", new MemberSaveControllerV3());
         handlerMappingMap.put("/front-controller/v5/v3/members", new MemberListControllerV3());
-        //v4Ãß°¡
+        //v4ì¶”ê°€
         handlerMappingMap.put("/front-controller/v5/v4/members/new-form", new MemberFormControllerV4());
         handlerMappingMap.put("/front-controller/v5/v4/members/save", new MemberSaveControllerV4());
         handlerMappingMap.put("/front-controller/v5/v4/members", new MemberListControllerV4());
     }
     private void initHandlerAdapters() {
         handlerAdapters.add(new ControllerV3HandlerAdapter());
+        handlerAdapters.add(new ControllerV4HandlerAdapter());
+
     }
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Object handler = getHandler(request);//1. ÇÚµé·¯Á¶È¸
+        Object handler = getHandler(request);//1. í•¸ë“¤ëŸ¬ì¡°íšŒ
         if (handler == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        MyHandlerAdapter adapter = getHandlerAdapter(handler);//2.ÇÚµé·¯¸¦ Ã³¸®ÇÒ ¼ö ÀÖ´Â ÇÚµé·¯ ¾î´ğÅÍ Á¶È¸
-        ModelView mv = adapter.handle(request, response, handler);//3~5 ÁøÇà, Modelview¸¦ ¹İÈ¯ ¹ŞÀ½
-        MyView view = viewResolver(mv.getViewName());//6,7 ViewResolver°¡ Myview¸¦ ¹İÈ¯ÇÔ.
-        view.render(mv.getModel(), request, response);//8.render(model)¸¦ È£ÃâÇÔ.
+        MyHandlerAdapter adapter = getHandlerAdapter(handler);//2.í•¸ë“¤ëŸ¬ë¥¼ ì²˜ë¦¬í•  ìˆ˜ ìˆëŠ” í•¸ë“¤ëŸ¬ ì–´ëŒ‘í„° ì¡°íšŒ
+        ModelView mv = adapter.handle(request, response, handler);//3~5 ì§„í–‰, Modelviewë¥¼ ë°˜í™˜ ë°›ìŒ
+        MyView view = viewResolver(mv.getViewName());//6,7 ViewResolverê°€ Myviewë¥¼ ë°˜í™˜í•¨.
+        view.render(mv.getModel(), request, response);//8.render(model)ë¥¼ í˜¸ì¶œí•¨.
     }
 
 
@@ -62,9 +64,9 @@ public class FrontControllerServletV5 extends HttpServlet {
     }
 
     /**
-     * 2.ÇÚµé·¯¸¦ Ã³¸®ÇÒ ¼ö ÀÖ´Â ÇÚµé·¯ ¾îµªÅÍ Á¶È¸
+     * 2.í•¸ë“¤ëŸ¬ë¥¼ ì²˜ë¦¬í•  ìˆ˜ ìˆëŠ” í•¸ë“¤ëŸ¬ ì–´ëí„° ì¡°íšŒ
      * @param handler
-     * @return ¸Â´Â ¾îµªÅÍ
+     * @return ë§ëŠ” ì–´ëí„°
      */
     private MyHandlerAdapter getHandlerAdapter(Object handler) {
         for (MyHandlerAdapter adapter : handlerAdapters) {
@@ -72,8 +74,8 @@ public class FrontControllerServletV5 extends HttpServlet {
                 return adapter;
             }
         }
-        //¿¹¿ÜÃ³¸®
-        throw new IllegalArgumentException("handler adapter¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù. handler=" + handler);
+        //ì˜ˆì™¸ì²˜ë¦¬
+        throw new IllegalArgumentException("handler adapterë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤. handler=" + handler);
     }
 
     private MyView viewResolver(String viewName) {

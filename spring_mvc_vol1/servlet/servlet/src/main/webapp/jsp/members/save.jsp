@@ -20,7 +20,7 @@
   <meta charset="UTF-8">
 </head>
 <body>
-성공
+work
 <ul>
   <li>id=<%=member.getId()%></li>
   <li>username=<%=member.getUsername()%></li>
